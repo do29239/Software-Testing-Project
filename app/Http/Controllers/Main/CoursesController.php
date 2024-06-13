@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Controllers\Main;
+
+use App\Http\Controllers\Controller; // Correct the namespace
+use App\Models\Course;
+
+class CoursesController extends Controller
+{
+    public function index()
+    {
+        // Retrieve the courses from the database
+        $courses = Course::all();
+
+        // Pass the courses to the view
+        return view('main.courses.course', compact('courses'));
+    }
+
+    public function show(Course $course)
+    {
+        $relatedCourses = Course::with('image')
+            ->where('id', '!=', $course->id)
+            ->get();
+        return view('main.courses.show-course', compact('course','relatedCourses'));
+    }
+}

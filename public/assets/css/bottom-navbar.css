@@ -1,0 +1,95 @@
+:root {
+    --main-color: #ffffff; /* Main background color */
+    --secondary-color: #f2f2f2; /* Secondary background color */
+    --active-color: #f53f85; /* Active link color */
+    --inactive-color: #000000; /* Inactive link color */
+    --shadow-color: rgba(0, 0, 0, 2); /* Shadow color */
+    --active-indicator-color: #000000; /* Active tab indicator color */
+}
+
+.theme-dark {
+    --main-color: #333333; /* Darker background for dark theme */
+    --inactive-color: #aaaaaa; /* Lighter text for dark theme */
+    --active-color: #ff69b4; /* Active link color for dark theme */
+    --shadow-color: rgba(255, 255, 255, 0.1); /* Shadow color for dark theme */
+}
+
+.bottom-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 600px;
+    height: 10%;
+    background: var(--main-color);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border-radius: 25px 25px 0 0;
+    z-index: 1000;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.bottom-navbar .nav-item {
+    display: flex;
+    align-items: center;
+    color: var(--inactive-color);
+    text-decoration: none;
+    padding: 5px;
+    transition: color 0.3s;
+}
+
+.bottom-navbar .nav-item.active {
+    color: var(--active-color);
+}
+
+.bottom-navbar .nav-item i {
+    font-size: 24px; /* Adjust icon size as needed */
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.cart-btn {
+    font-size: 18px;
+    position: relative;
+    line-height: 1;
+}
+
+.cart-btn a {
+    display: inline-block;
+    position: relative;
+    color: var(--inactive-color);
+}
+
+.cart-btn a span {
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    text-align: center;
+    line-height: 13.9px;
+    border-radius: 50%;
+    color: #ffffff;
+    background-color: var(--active-color);
+    font-weight: 500;
+    font-size: 11px !important;
+}
+
+@media (min-width: 768px) {
+    .bottom-navbar {
+        display: none;
+    }
+}
+
+@media (orientation: landscape) {
+    .bottom-navbar {
+        height: 15%; /* Adjust height for landscape mode */
+    }
+
+    .bottom-navbar .nav-item i {
+        font-size: 20px; /* Adjust icon size for landscape mode */
+    }
+}
