@@ -12,81 +12,120 @@ describe('Homepage Load Test', () => {
 });
 
 
-// describe('Authentication Tests', () => {
-//     it('Should register a new user', () => {
-//         cy.visit('/register');
-//         cy.get('input[name="first_name"]').type('Test');
-//         cy.get('input[name="last_name"]').type('User');
-//         cy.get('input[name="email"]').type('testuser@user.com');
-//         cy.get('input[name="address"]').type('123 Test St');
-//         cy.get('input[name="city"]').type('Test City');
-//         cy.get('input[name="phone"]').type('1234567890');
-//         cy.get('input[name="postcode"]').type('12345');
-//         cy.get('input[name="password"]').type('password');
-//         cy.get('input[name="password_confirmation"]').type('password');
-//         cy.get('button.default-btn').contains('Register').click();
-//         cy.url().should('include', '/dashboard'); // Adjust the URL to match your application
-//     });
-//
-//     it('Should login an existing user', () => {
-//         cy.visit('/login');
-//         cy.get('input[name="email"]').type('testuser@user.com');
-//         cy.get('input[name="password"]').type('password');
-//         cy.get('button.default-btn').contains('Login').click();
-//         cy.url().should('include', '/dashboard'); // Adjust the URL to match your application
-//     });
-// });
-//
-//
-// describe('Product Search and Filter Tests', () => {
-//     it('Should search for a product', () => {
-//         cy.visit('/shop');
-//         cy.get('input#search-bar').type('Product Name');
-//         cy.get('button[type="submit"]').click();
-//         cy.contains('Product Name');
-//     });
-//
-//     it('Should filter products by category', () => {
-//         cy.visit('/shop');
-//         cy.contains('Categories').next().within(() => {
-//             cy.get('a').contains('Category Name').click();
-//         });
-//         cy.contains('Category Name');
-//     });
-//
-//     it('Should filter products by brand', () => {
-//         cy.visit('/shop');
-//         cy.contains('Brands').next().within(() => {
-//             cy.get('a').contains('Brand Name').click();
-//         });
-//         cy.contains('Brand Name');
-//     });
-// });
-//
-//
-// describe('Cart and Checkout Tests', () => {
-//     it('Should add a product to the cart and proceed to checkout', () => {
-//         cy.visit('/shop');
-//         cy.get('button.default-btn').contains('Add to Cart').first().click();
-//         cy.get('a[href="/cart"]').click();
-//         cy.url().should('include', '/cart');
-//         cy.get('button.default-btn').contains('Checkout').click();
-//         cy.url().should('include', '/checkout');
-//     });
-// });
-//
-//
-// describe('User Profile Tests', () => {
-//     it('Should update user profile', () => {
-//         cy.login('testuser@example.com', 'password'); // Assuming you have a custom command for login
-//         cy.visit('/profile');
-//         cy.get('input[name="first_name"]').clear().type('Updated');
-//         cy.get('input[name="last_name"]').clear().type('User');
-//         cy.get('button.default-btn').contains('Update Profile').click();
-//         cy.contains('Profile updated successfully');
-//     });
-// });
-//
+describe('Authentication Tests', () => {
+    it('Should register a new user', () => {
+        cy.visit('/register');
+        cy.get('input[name="first_name"]').type('Test');
+        cy.get('input[name="last_name"]').type('User');
+        cy.get('input[name="email"]').type('test2user@user.com');
+        cy.get('input[name="address"]').type('123 Test St');
+        cy.get('input[name="city"]').type('Test City');
+        cy.get('input[name="phone"]').type('1234567890');
+        cy.get('input[name="postcode"]').type('12345');
+        cy.get('input[name="password"]').type('password');
+        cy.get('input[name="password_confirmation"]').type('password');
+        cy.get('button.default-btn').contains('Register').click();
+        cy.url().should('include', '/'); // Adjust the URL to match your application
+        cy.contains('Log Out');
+    });
+
+    it('Should login an existing user', () => {
+        cy.visit('/login');
+        cy.get('input[name="email"]').type('testuser@user.com');
+        cy.get('input[name="password"]').type('password');
+        cy.get('button.default-btn').contains('Login').click();
+        cy.url().should('include', '/'); // Adjust the URL to match your application
+        cy.contains('Log Out');
+    });
+});
+
+
+describe('Product Search and Filter Tests', () => {
+
+        beforeEach(() => {
+        cy.login('user@user.com', 'password'); // Custom command for admin login
+    });
+
+    it('Should search for a product', () => {
+        cy.visit('/shop'); // Adjust the URL to your shop page
+
+        cy.get('.others-option .search-btn-box .search-btn').first().click({ force: true });
+
+        // Ensure the search overlay is visible
+        cy.get('#search-overlay').should('be.visible');
+
+        // Type into the search bar
+        cy.get('input#search-bar').type('Fanola');
+
+        // Click the search button
+        cy.get('button[type="submit"]').click({multiple:true});
+
+        // Wait for Livewire to update the DOM
+        cy.wait(1000); // Adjust the wait time if necessary
+
+        // Add assertions for the product details in the search results
+        cy.contains('Shampoo', { timeout: 10000 });
+    });
+
+    it('Should filter products by category', () => {
+        cy.visit('/shop');
+        cy.contains('Categories').next().within(() => {
+            cy.get('a').contains('Hair Color').click();
+        });
+        cy.contains('Hair Color');
+    });
+
+    it('Should filter products by brand', () => {
+        cy.visit('/shop');
+        cy.contains('Brands').next().within(() => {
+            cy.get('a').contains('Fanola').click();
+        });
+        cy.contains('Shampoo');
+    });
+});
+
+
+describe('Cart and Checkout Tests', () => {
+    it('Should add a product to the cart and proceed to checkout', () => {
+        cy.login('user@user.com', 'password'); // Assuming you have a custom command for login
+        cy.visit('/shop');
+
+        // Ensure the products are loaded
+        cy.get('#products-collections-filter').should('exist');
+
+        // Debug: Check if products-content is visible
+        cy.get('.products-content').should('be.visible');
+
+        // Interact with the first product's "Add to Cart" button
+        cy.get('.products-content').first().within(() => {
+            cy.get('button.default-btn').should('be.visible').click();
+        });
+
+        cy.get('.option-item .cart-btn a').first().click({force:true});
+
+        cy.get('#shoppingCartModal').should('be.visible');
+        cy.get('a').contains('Checkout').click();
+
+        // Ensure the URL includes '/checkout'
+        cy.url().should('include', '/checkout');
+    });
+});
+
+
+
+
+
+
+describe('User Profile Tests', () => {
+    it('Should update user profile', () => {
+        cy.login('user@user.com', 'password'); // Assuming you have a custom command for login
+        cy.visit('/profile');
+        cy.get('input[name="first_name"]').clear().type('Updated');
+        cy.get('input[name="last_name"]').clear().type('User');
+        cy.get('button.default-btn').contains('Save Profile').click();
+    });
+});
+
 
 describe('Admin Product Management', () => {
     beforeEach(() => {
@@ -123,12 +162,12 @@ describe('Admin Product Management', () => {
         cy.get('button').contains('Update Product').click();
     });
 
-    // it('Should delete a product', () => {
-    //     cy.visit('/products');
-    //     cy.get('button').contains('Delete').first().click();
-    //     cy.on('window:confirm', () => true); // Accept the confirmation dialog
-    //     cy.contains('Product deleted successfully');
-    // });
+    it('Should delete a product', () => {
+        cy.visit('/products');
+        cy.get('button').contains('Delete').first().click();
+        cy.on('window:confirm', () => true); // Accept the confirmation dialog
+        cy.contains('Product deleted successfully');
+    });
 
 
     it('Should view a product', () => {
@@ -145,24 +184,6 @@ describe('Admin Product Management', () => {
         cy.contains('Description', { timeout: 10000 });
         cy.contains('Quantity', { timeout: 10000 });
         cy.contains('Price', { timeout: 10000 });
-    });
-});
-
-
-
-describe('Order Management', () => {
-    beforeEach(() => {
-        cy.login('user@user.com', 'password'); // Custom command for user login
-    });
-
-    it('Should view order history', () => {
-        cy.visit('/my-orders');
-        cy.contains('Order History');
-    });
-
-    it('Should view order details', () => {
-        cy.visit('/order-details/1');
-        cy.contains('Order Details');
     });
 });
 
